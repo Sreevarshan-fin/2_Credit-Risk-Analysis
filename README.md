@@ -1,38 +1,194 @@
 
-# Credit Risk Modelling – Lauki Finance 
+# Credit Risk Modelling
 
-This project builds an interpretable credit risk model for an NBFC using historical loan data to estimate probability of default and support scalable, data-driven credit decisions.
 
-**[![Open in Streamlit](https://img.shields.io/badge/Launch%20App-Streamlit-%23FF4B4B?logo=streamlit&logoColor=white&style=for-the-badge&labelColor=FF4B4B)](https://credit-risk-analysis-jj3vtj43niyqoxbokhujxx.streamlit.app/)**  
-
-## The Story Behind the Project
-
-Lauki Finance is an NBFC that focuses on lending to customers who are often excluded by traditional banks. While this helps expand financial access, it also exposes the business to higher credit risk. At the time of this project, credit evaluation at Lauki Finance relied heavily on manual judgment. As loan applications increased, this approach became slow, inconsistent, and difficult to scale, leading to delays in decisions and increased exposure to defaults.
-
-The goal of this project was to address this challenge by building a **data-driven, interpretable credit risk model** that could help the Risk Unit consistently measure borrower risk and support better credit decisions.
 
 ---
 
-## What the Project Aimed to Solve
+## Problem Statement
 
-The core problem was not just predicting defaults, but **measuring risk in a way that the business could trust and use**. The risk team needed a model that could:
+Lauki Finance is a Non-Banking Financial Company (NBFC) that provides loans to customers often underserved by traditional banks. While this increases financial inclusion, it also exposes the company to higher credit risk.
 
-* Rank customers by default risk
-* Work reliably on future data
-* Be explainable enough for audits and business discussions
-* Support decision-making without fully automating approvals
+At the time of this project, credit evaluation relied heavily on manual assessment by risk analysts. As loan applications increased, this process became slow, inconsistent, and difficult to scale. This resulted in delayed loan decisions and increased exposure to potential defaults.
 
-This project focuses on **credit risk measurement**, not black-box automation.
+The objective of this project was to build an **interpretable credit risk model** capable of estimating the **Probability of Default (PD)** for each borrower. The model would support the risk team in making faster, more consistent, and data-driven credit decisions.
 
 ---
 
 ## How the Problem Was Approached
 
-To solve this, historical loan data from Lauki Finance was used, covering customer details, loan characteristics, and credit bureau information. The project followed a structured, industry-aligned credit risk modeling workflow, starting from data preparation and ending with time-based validation.
+The project followed a structured credit risk modeling workflow similar to industry practices used by banks and NBFCs.
 
-Rather than relying on a single algorithm, multiple models were explored to compare performance and stability. The emphasis throughout was on **risk ranking quality**, not just prediction accuracy.
+The approach focused on:
+
+* Preparing reliable borrower and loan data
+* Engineering risk-relevant financial indicators
+* Handling class imbalance in default prediction
+* Training multiple machine learning models
+* Evaluating models using credit risk performance metrics
+
+The goal was not just predictive accuracy, but **strong risk ranking capability and model interpretability**.
 
 ---
+
+## Data Resources
+
+The dataset contained historical loan information including:
+
+**Customer Attributes**
+
+* Demographics
+* Income details
+* Employment information
+
+**Loan Characteristics**
+
+* Loan amount
+* Loan purpose
+* Loan tenure
+
+**Credit Bureau Data**
+
+* Past delinquencies
+* Days past due (DPD)
+* Credit behavior indicators
+
+### Time-based Validation
+
+To ensure realistic model evaluation:
+
+* **Training Data:** Feb 2022 – Feb 2024
+* **Out-of-Time Test Data:** Mar 2024 – May 2024
+
+Out-of-time validation ensures the model performs well on **future unseen data**, which is critical in credit risk modeling.
+
+---
+
+## Solution Approach
+
+### 1. Data Cleaning
+
+Several preprocessing steps were performed to improve data quality:
+
+* Corrected **improper text formats**
+* Standardized **data types**
+* Handled **missing values**
+* Removed **invalid loan purpose values**
+
+These steps ensured reliable model inputs.
+
+---
+
+### 2. Feature Engineering
+
+Domain-driven features were created to improve predictive power.
+
+Key engineered variables include:
+
+**Loan to Income Ratio (LTI)**
+Measures borrower debt burden relative to income.
+
+**Delinquency Ratio**
+Captures frequency of missed payments.
+
+**Average Days Past Due (Avg DPD per Delinquency)**
+Measures severity of late payments.
+
+Feature selection was performed using:
+
+* **Weight of Evidence (WOE)**
+* **Information Value (IV)**
+* **Variance Inflation Factor (VIF)** to detect multicollinearity.
+
+---
+
+### 3. Model Training
+
+Multiple modeling strategies were explored to address class imbalance and improve predictive performance.
+
+| Attempt   | Method               | Model               | Precision (Default) | Recall (Default) | F1 Score | Accuracy |
+| --------- | -------------------- | ------------------- | ------------------- | ---------------- | -------- | -------- |
+| Attempt 1 | RandomizedSearchCV   | Logistic Regression | 0.83                | 0.74             | 0.78     | 0.96     |
+| Attempt 1 | RandomizedSearchCV   | XGBoost             | 0.77                | 0.84             | 0.80     | 0.96     |
+| Attempt 2 | Under Sampling       | Logistic Regression | 0.51                | 0.96             | 0.67     | 0.92     |
+| Attempt 2 | Under Sampling       | XGBoost             | 0.51                | 0.98             | 0.67     | 0.92     |
+| Attempt 3 | SMOTE Tomek          | Logistic Regression | 0.55                | 0.94             | 0.70     | 0.93     |
+**| **Attempt 4** | **SMOTE Tomek + Optuna** | **Logistic Regression** | **0.56**            | **0.94**         | **0.70** | **0.93** |**
+| Attempt 4 | SMOTE Tomek + Optuna | XGBoost             | 0.56                | 0.94             | 0.70     | 0.93     |
+
+### Best Model
+
+The best performing model was:
+
+**Logistic Regression with SMOTE-Tomek balancing and Optuna hyperparameter tuning**
+
+This model was selected because it provided:
+
+* Strong ranking power
+* High recall for defaulters
+* Interpretability suitable for risk teams
+
+---
+
+### 4. Model Evaluation
+
+The model was evaluated using standard credit risk metrics.
+
+**AUC-ROC**
+
+* **AUC Score:** 0.9837
+* **Gini Coefficient:** 0.9673
+
+Higher AUC indicates strong ability to rank risky borrowers.
+
+<img width="578" height="455" alt="image" src="https://github.com/user-attachments/assets/ee320ca0-dbee-4154-ae2d-7dd69b400626" />
+
+
+---
+
+### KS Statistic
+
+The Kolmogorov–Smirnov statistic measures the separation between defaulters and non-defaulters.
+
+| Decile | Min Probability | Max Probability | Events | Non-events | Event Rate (%) | Non-event Rate (%) | Cum Events | Cum Non-events | Cum Event Rate (%) | Cum Non-event Rate (%) | KS         |
+| ------ | --------------- | --------------- | ------ | ---------- | -------------- | ------------------ | ---------- | -------------- | ------------------ | ---------------------- | ---------- |
+| 9      | 0.821           | 1.000           | 899    | 351        | 71.92          | 28.08              | 899        | 351            | 83.706             | 3.073                  | **80.633** |
+| 8      | 0.212           | 0.819           | 160    | 1090       | 12.80          | 87.20              | 1059       | 1441           | 98.603             | 12.615                 | **85.988** |
+| 7      | 0.029           | 0.212           | 10     | 1239       | 0.801          | 99.199             | 1069       | 2680           | 99.534             | 23.461                 | **76.073** |
+| 6      | 0.004           | 0.029           | 5      | 1245       | 0.400          | 99.600             | 1074       | 3925           | 100.000            | 34.361                 | **65.639** |
+| 5      | 0.001           | 0.004           | 0      | 1249       | 0.000          | 100.000            | 1074       | 5174           | 100.000            | 45.295                 | **54.705** |
+| 4      | 0.000           | 0.001           | 0      | 1250       | 0.000          | 100.000            | 1074       | 6424           | 100.000            | 56.237                 | **43.763** |
+| 3      | 0.000           | 0.000           | 0      | 1250       | 0.000          | 100.000            | 1074       | 7674           | 100.000            | 67.180                 | **32.820** |
+| 2      | 0.000           | 0.000           | 0      | 1249       | 0.000          | 100.000            | 1074       | 8923           | 100.000            | 78.114                 | **21.886** |
+| 1      | 0.000           | 0.000           | 0      | 1250       | 0.000          | 100.000            | 1074       | 10173          | 100.000            | 89.057                 | **10.943** |
+| 0      | 0.000           | 0.000           | 0      | 1250       | 0.000          | 100.000            | 1074       | 11423          | 100.000            | 100.000                | **0.000**  |
+
+
+KS Statistic Analysis
+
+The Kolmogorov–Smirnov (KS) statistic measures how well the model separates default (events) and non-default (non-events) borrowers.
+
+The maximum KS value = 85.99, indicating strong discriminatory power.
+
+Most defaults are concentrated in the top deciles, meaning the model effectively ranks high-risk borrowers.
+
+---
+
+## Final Outcome
+
+The final credit risk model:
+
+* Achieves **AUC ≈ 0.98**
+* Achieves **KS ≈ 86**
+* Successfully ranks borrowers by probability of default
+* Maintains performance on out-of-time data
+* Produces interpretable risk scores suitable for business use
+
+---
+
+
+
+
 ## Project Structure
 
 ```
@@ -47,35 +203,6 @@ credit-risk-model/
 ├── requirements.txt         # Project dependencies
 └── .gitignore               # Files excluded from version control
 ```
-
-## Data and Validation Strategy
-
-The dataset included two years of historical loan data:
-
-* February 2022 to February 2024 for training and validation
-* March 2024 to May 2024 as an out-of-time test set
-
-Using an out-of-time dataset ensured the model was evaluated on future, unseen data, which is critical in real-world credit risk modeling. This helped confirm that the model could generalize beyond the period it was trained on.
-
----
-
-## Features Used in the Model
-
-The data was grouped into three major feature categories:
-
-* Customer features capturing borrower profile attributes
-* Loan features describing loan structure and purpose
-* Bureau features reflecting historical credit behavior and repayment patterns
-
-Together, these features allowed the model to capture both **who the borrower is** and **how they have behaved financially in the past**.
-
----
-
-## Target Definition
-
-The modeling task was framed as a binary classification problem, where the target variable represented whether a borrower defaulted or not. This aligns with standard probability-of-default modeling used across banks and NBFCs.
-
----
 
 ## Preparing the Data for Modeling
 
