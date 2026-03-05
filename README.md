@@ -186,8 +186,66 @@ The final credit risk model:
 
 ---
 
-5. **Data Drift and Monitoring** 
+5. ## **Data Drift and Monitoring**
 
+
+**Note: Population Stability Index (PSI) and Characteristic Stability Index (CSI) were evaluated using an Out-of-Time (OOT) validation dataset rather than a simple random test split.**
+
+1) OOT validation simulates real production scenarios by comparing the training data distribution with data from a later time period, enabling the detection of population drift and feature instability.
+
+2) PSI measures shifts in the predicted probability distribution between training and OOT datasets.
+
+3) CSI measures changes in the distribution of input features across time.
+
+This approach ensures the model remains stable, reliable, and robust when deployed in real-world credit risk decision systems.
+
+**Population Stability Index (PSI) table**
+
+| Bin | Probability Range   | Train Count | Train % | Test Count | Test % | A-B    | ln(A/B) | PSI    |
+| --- | ------------------- | ----------- | ------- | ---------- | ------ | ------ | ------- | ------ |
+| 0   | 0.000000 – 0.000004 | 6839        | 10.0    | 2223       | 17.788 | -7.788 | -0.576  | 0.0449 |
+| 1   | 0.000004 – 0.000087 | 6839        | 10.0    | 2337       | 18.700 | -8.700 | -0.626  | 0.0545 |
+| 2   | 0.000087 – 0.001830 | 6839        | 10.0    | 2326       | 18.612 | -8.612 | -0.621  | 0.0535 |
+| 3   | 0.001830 – 0.053255 | 6839        | 10.0    | 2243       | 17.948 | -7.948 | -0.585  | 0.0465 |
+| 4   | 0.053255 – 0.603632 | 6839        | 10.0    | 1739       | 13.915 | -3.915 | -0.330  | 0.0129 |
+| 5   | 0.603632 – 0.892263 | 6839        | 10.0    | 574        | 4.593  | 5.407  | 0.778   | 0.0421 |
+| 6   | 0.892263 – 0.967171 | 6839        | 10.0    | 348        | 2.785  | 7.215  | 1.278   | 0.0922 |
+| 7   | 0.967171 – 0.990929 | 6839        | 10.0    | 247        | 1.976  | 8.024  | 1.621   | 0.1301 |
+| 8   | 0.990929 – 0.998719 | 6839        | 10.0    | 218        | 1.744  | 8.256  | 1.746   | 0.1442 |
+| 9   | 0.998719 – 1.000000 | 6839        | 10.0    | 242        | 1.936  | 8.064  | 1.642   | 0.1324 |
+
+Result
+
+Total PSI ≈ 0.75
+
+Indicates significant population shift
+
+Model monitoring or recalibration may be required before production deployment.
+
+
+**Characteristic Stability Index (CSI)**
+
+| # | Feature                  | Train Count | Test Count | CSI      |
+| - | ------------------------ | ----------- | ---------- | -------- |
+| 0 | age                      | 37,488      | 12,497     | 0.000141 |
+| 1 | avg_dpd_per_delinquency  | 37,488      | 12,497     | 0.000000 |
+| 2 | credit_utilization_ratio | 37,488      | 12,497     | 0.000081 |
+| 3 | delinquency_ratio        | 37,488      | 12,497     | 0.000000 |
+| 4 | loan_purpose             | 37,488      | 12,497     | 0.000207 |
+| 5 | loan_tenure_months       | 37,488      | 12,497     | 0.000037 |
+| 6 | loan_to_income           | 37,488      | 12,497     | 0.000000 |
+| 7 | loan_type                | 37,488      | 12,497     | 0.000008 |
+| 8 | number_of_open_accounts  | 37,488      | 12,497     | 0.000047 |
+| 9 | residence_type           | 37,488      | 12,497     | 0.000192 |
+
+
+**Result:**
+
+All features have CSI < 0.01, indicating very high stability.
+
+No significant feature drift between training data and OOT/test dataset.
+
+This suggests the model inputs remain consistent and reliable for production deployment.
 
 
 ## Project Structure
