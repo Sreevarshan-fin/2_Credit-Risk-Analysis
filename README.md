@@ -64,6 +64,28 @@ Out-of-time validation ensures the model performs well on **future unseen data**
 
 ---
 
+
+## Project Structure
+
+```
+credit-risk-model/
+│
+├── credit_risk_model.ipynb   # Data exploration, feature engineering, and model experimentation
+├── main.py                  # Entry point for executing predictions and application logic
+├── prediction_helper.py     # Reusable preprocessing and inference utilities
+├── model_data.joblib        # Trained model and associated preprocessing artifacts
+│
+├── README.md                # System overview and project documentation
+├── requirements.txt         # Project dependencies
+└── .gitignore               # Files excluded from version control
+```
+
+## Project Archieture 
+
+<img width="1402" height="646" alt="image" src="https://github.com/user-attachments/assets/624870fc-2f58-406f-8261-e7db00ff040e" />
+
+
+
 ## Solution Approach
 
 ### 1. Data Cleaning
@@ -246,6 +268,40 @@ All features have CSI < 0.01, indicating very high stability.
 No significant feature drift between training data and OOT/test dataset.
 
 This suggests the model inputs remain consistent and reliable for production deployment.
+
+----
+
+## Business Impact
+
+The model improves credit decision-making by enabling **data-driven borrower risk assessment**.
+
+* Achieves **Recall ≈ 0.94 for defaulters**, helping detect most high-risk borrowers before loan approval.
+* **AUC ≈ 0.98 and KS ≈ 86** indicate strong ability to rank borrowers by default risk.
+* Enables **risk-based borrower segmentation**, supporting better loan approval and pricing decisions.
+* Helps reduce potential **bad debt exposure** and improves portfolio quality.
+
+---
+
+## Key Challenge
+
+**Class Imbalance**
+
+Default cases were significantly fewer than non-defaults, which can cause models to ignore risky borrowers.
+
+**Business Requirement:**
+Maintain **Recall ≥ 0.90** to ensure high detection of defaulters.
+
+**Solution:**
+Applied **SMOTE-Tomek resampling with Optuna hyperparameter tuning**, achieving **Recall ≈ 0.94** while maintaining strong model ranking performance.
+
+---
+
+## Future Improvements
+
+* Implement **continuous drift monitoring** using PSI and CSI.
+* Periodically **retrain the model when population drift increases**.
+* Deploy a **real-time monitoring pipeline** to track model performance.
+* Create **risk bands from PD scores** to integrate with loan approval systems.
 
 
 ## Project Structure
