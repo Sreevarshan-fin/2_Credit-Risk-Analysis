@@ -186,6 +186,7 @@ The final credit risk model:
 
 ---
 
+5. **Data Drift and Monitoring** 
 
 
 
@@ -203,55 +204,4 @@ credit-risk-model/
 ├── requirements.txt         # Project dependencies
 └── .gitignore               # Files excluded from version control
 ```
-
-## Preparing the Data for Modeling
-
-Before training the models, several preprocessing steps were applied to ensure data quality and stability. Invalid values in loan purpose were handled, predictive features were selected using Information Value and domain knowledge, multicollinearity was checked using VIF, and numeric variables were scaled using Min–Max scaling. These steps ensured that the model inputs were both statistically sound and business-relevant.
-
----
-
-## Model Development and Tuning
-
-Multiple algorithms were trained and compared, including Logistic Regression, Random Forest, and XGBoost. This allowed a balance between interpretability and predictive power. To improve performance and avoid overfitting, hyperparameter tuning was carried out using RandomizedSearchCV and Optuna.
-
----
-
-## How Model Performance Was Evaluated
-
-Model evaluation focused on metrics that matter in credit risk:
-
-* AUC and Gini to measure ranking power
-* KS statistic to assess separation between defaulters and non-defaulters
-* Classification reports to understand prediction behavior
-
-Special attention was given to performance consistency across training, test, and out-of-time datasets.
-
----
-
-## Business Perspective on the Model Output
-
-Instead of directly approving or rejecting loans, the final model produces **interpretable risk scores**. These scores can be translated into business rules and integrated with a Business Rule Engine. This allows Lauki Finance to automate parts of the decision process while still retaining analyst oversight and regulatory transparency.
-
----
-
-## Final Outcome 
-The result of Phase 1 is a validated, industry-aligned credit risk model that:
-
-* Accurately ranks customers by default risk
-* Meets defined performance benchmarks
-* Performs consistently on future data
-* Produces explainable outputs suitable for risk teams
-* Can be extended into downstream decision or rule-based systems
-
----
-
-## Overall Goal
-
-The broader goal of this project is to provide Lauki Finance with a **practical and scalable credit risk modeling foundation**. By combining strong statistical performance with interpretability, the model helps reduce bad loans, improve decision turnaround time, and support data-driven lending operations as the business grows.
-
----
-
-
-
-
 
