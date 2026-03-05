@@ -1,6 +1,11 @@
 
 # Credit Risk Modelling
 
+This project develops an interpretable credit risk model for an NBFC to estimate the Probability of Default (PD) of loan applicants. The goal is to support faster and more consistent credit decisions by replacing manual risk assessment with a scalable machine learning solution.
+
+The model uses borrower demographics, loan characteristics, and credit behavior data to identify high-risk applicants. The workflow includes feature engineering, class imbalance handling using SMOTE-Tomek, hyperparameter tuning with Optuna, and Out-of-Time validation to simulate real production scenarios.
+
+The final system demonstrates an end-to-end credit risk pipeline with model monitoring using PSI and CSI, and a Streamlit demo application for predicting borrower risk.
 
 
 ---
@@ -65,20 +70,7 @@ Out-of-time validation ensures the model performs well on **future unseen data**
 ---
 
 
-## Project Structure
 
-```
-credit-risk-model/
-│
-├── credit_risk_model.ipynb   # Data exploration, feature engineering, and model experimentation
-├── main.py                  # Entry point for executing predictions and application logic
-├── prediction_helper.py     # Reusable preprocessing and inference utilities
-├── model_data.joblib        # Trained model and associated preprocessing artifacts
-│
-├── README.md                # System overview and project documentation
-├── requirements.txt         # Project dependencies
-└── .gitignore               # Files excluded from version control
-```
 
 ## Project Archieture 
 
@@ -296,13 +288,16 @@ Applied **SMOTE-Tomek resampling with Optuna hyperparameter tuning**, achieving 
 
 ---
 
-## Future Improvements
+Tech Stack
 
-* Implement **continuous drift monitoring** using PSI and CSI.
-* Periodically **retrain the model when population drift increases**.
-* Deploy a **real-time monitoring pipeline** to track model performance.
-* Create **risk bands from PD scores** to integrate with loan approval systems.
-
+Python
+Scikit-learn
+XGBoost
+Optuna
+Imbalanced-learn (SMOTE-Tomek)
+Pandas / NumPy
+MLflow (experiment tracking)
+Streamlit (model demo
 
 ## Project Structure
 
@@ -319,3 +314,11 @@ credit-risk-model/
 └── .gitignore               # Files excluded from version control
 ```
 
+
+
+## Future Improvements
+
+* Implement **continuous drift monitoring** using PSI and CSI.
+* Periodically **retrain the model when population drift increases**.
+* Deploy a **real-time monitoring pipeline** to track model performance.
+* Create **risk bands from PD scores** to integrate with loan approval systems.
